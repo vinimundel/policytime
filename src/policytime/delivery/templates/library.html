@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Policy library — PolicyTime{% endblock %}
+{% block content %}
+<section class="page-intro"><p class="eyebrow">THE SOURCE OF EVERY ANSWER</p><h1>The policy library.</h1><p>24 fictional documents. Six topics. Two countries.<br>Version history and exceptions are part of the evidence.</p></section>
+<div class="library-grid">{% for document in documents %}<a class="library-card" href="/policies/{{ document.id }}"><span class="eyebrow">{{ document.topic.value }} / {{ document.version }}</span><h2>{{ document.title }}</h2><p>Published {{ document.published_on }}<br>{{ document.clauses|length }} inspectable clauses</p><span class="library-link">Read policy <span aria-hidden="true">↗</span></span></a>{% endfor %}</div>
+{% endblock %}

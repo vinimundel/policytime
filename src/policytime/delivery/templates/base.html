@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Find the policy that applied to your expense. Inspect dates, exceptions, and source evidence.">
+  <meta name="htmx-config" content='{"allowEval":false,"allowScriptTags":false,"includeIndicatorStyles":false}'>
+  <title>{% block title %}PolicyTime — the right policy, at the right time{% endblock %}</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/vendor/htmx.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a href="/" class="brand" aria-label="PolicyTime home"><span class="brand-symbol" aria-hidden="true">p<span>t</span></span>PolicyTime<span class="beta">BETA</span></a>
+    <nav aria-label="Main navigation">
+      <a href="/" {% if request.url.path == '/' %}aria-current="page"{% endif %}>Workspace</a>
+      <a href="/policies" {% if request.url.path == '/policies' %}aria-current="page"{% endif %}>Policy library</a>
+      <a href="/about" {% if request.url.path == '/about' %}aria-current="page"{% endif %}>How it works <span aria-hidden="true">↗</span></a>
+    </nav>
+    <span class="demo-label"><span class="status-dot"></span>Synthetic company demo</span>
+  </header>
+  <main id="main">{% block content %}{% endblock %}</main>
+  <footer class="site-footer"><span>Built for questions where <em>when</em> matters.</span><span>Northstar Works is fictional. {% if mode == 'demo' %}Offline mode · exact policy passages{% else %}Live mode · AI-generated explanations{% endif %}</span><a href="/openapi.json">API schema ↗</a></footer>
+</body>
+</html>

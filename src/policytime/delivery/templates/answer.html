@@ -1,0 +1,14 @@
+{% if error %}<div class="error-state" role="alert"><span class="eyebrow">COULDN’T COMPLETE THIS REQUEST</span><h3>Let’s try that again.</h3><p>{{ error }}</p></div>{% endif %}
+{% for response in responses %}
+{% set result = response.result %}
+<article class="result-card" data-outcome="{{ result.status }}">
+  <div class="card-topline"><span class="eyebrow">{% if responses|length > 1 %}{{ loop.index }} / DATE COMPARISON{% else %}02 / FOLLOW THE EVIDENCE{% endif %}</span><span class="outcome-badge {{ result.status }}">{{ result.status|replace('_', ' ') }}</span></div>
+  {% if result.context is defined %}<div class="context-strip"><span>{{ result.context.expense_date.strftime('%d %b %Y') }}</span><span>{{ result.context.country.value }}</span><span>{{ result.context.employment_type.value|title }}</span></div>{% endif %}
+  {% if result.status == 'answered' %}
+  <h3 class="result-title">Here’s the policy that applies.</h3><div class="answer-text">{{ result.answer }}</div>
+  {% else %}<h3 class="result-title">{% if result.status == 'conflict' %}These rules need a human decision.{% elif result.status == 'needs_context' %}A little more context, please.{% else %}There’s a gap in the evidence.{% endif %}</h3><p class="answer-text">{{ result.message }}</p>{% endif %}
+  {% if result.citations is defined %}<div class="sources"><h4>Source evidence <span class="count">{{ result.citations|length }}</span></h4>{% for citation in result.citations %}<details class="source-item" {% if loop.first %}open{% endif %}><summary><span class="source-index">{{ '%02d' % loop.index }}</span><span>{{ citation.document_title }}<small>{{ citation.clause_id }}</small></span><span aria-hidden="true">+</span></summary><blockquote>{{ citation.quote }}</blockquote><div class="source-meta"><span>Effective {{ citation.effective_period.start }}{% if citation.effective_period.end %} to {{ citation.effective_period.end }} (exclusive){% else %} onward{% endif %}</span><a href="/policies/{{ citation.document_id }}#{{ citation.clause_id }}">Open policy ↗</a></div></details>{% endfor %}</div>{% endif %}
+  {% if result.selection is defined and result.selection %}<details class="selection-details"><summary>Why these rules? <span>{{ result.selection|length }} clauses checked</span></summary><ol class="selection-list">{% for step in result.selection %}<li><span class="decision-dot {{ step.decision }}"></span><div><strong>{{ step.clause_id }}</strong><p>{{ step.reason }}</p></div></li>{% endfor %}</ol></details>{% endif %}
+  <div class="run-note"><span>{{ '%.0f' % response.run.elapsed_ms }} ms{% if response.run.cached %} · cached{% endif %}</span><span>{% if response.run.mode == 'demo' %}Exact passages · offline mode{% else %}AI explanation · verify the evidence{% endif %}</span><span>Corpus {{ response.run.corpus_version[:8] }}</span></div>
+</article>
+{% endfor %}

@@ -1,0 +1,36 @@
+{
+  "groups": {
+    "complete/development": {
+      "cases": 20,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 1.0,
+      "outcome_accuracy": 1.0,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 0,
+      "forbidden_citations": 0,
+      "p95_ms_sequential": 0.37023199547547847,
+      "total_cost_usd": 0.0
+    },
+    "complete/test": {
+      "cases": 40,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 1.0,
+      "outcome_accuracy": 1.0,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 0,
+      "forbidden_citations": 0,
+      "p95_ms_sequential": 0.32383900543209165,
+      "total_cost_usd": 0.0
+    }
+  },
+  "provenance": {
+    "corpus_version": "82d154e1ccd254e05376ef9c281fc7c8fbb787b8169ae8febdc8e67d58c0efe2",
+    "generator": "offline-exact-passages-v1",
+    "retriever": "offline-lexical-v1",
+    "reranker": "offline-no-reranker",
+    "labels": "Synthetic specification facts; no independent human correctness ratings.",
+    "limitations": "Reference checks do not establish semantic entailment or real-company quality."
+  }
+}

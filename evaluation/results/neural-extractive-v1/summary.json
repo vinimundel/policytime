@@ -1,0 +1,108 @@
+{
+  "groups": {
+    "vector/development": {
+      "cases": 20,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 0.2,
+      "outcome_accuracy": 1.0,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 100,
+      "forbidden_citations": 0,
+      "p95_ms_sequential": 20.47064100042917,
+      "total_cost_usd": 0.0
+    },
+    "vector/test": {
+      "cases": 40,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 0.05,
+      "outcome_accuracy": 0.75,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 238,
+      "forbidden_citations": 6,
+      "p95_ms_sequential": 25.963086998672225,
+      "total_cost_usd": 0.0
+    },
+    "filtered/development": {
+      "cases": 20,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 1.0,
+      "outcome_accuracy": 1.0,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 0,
+      "forbidden_citations": 0,
+      "p95_ms_sequential": 18.527218999224715,
+      "total_cost_usd": 0.0
+    },
+    "filtered/test": {
+      "cases": 40,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 0.775,
+      "outcome_accuracy": 0.925,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 0,
+      "forbidden_citations": 6,
+      "p95_ms_sequential": 18.590410996694118,
+      "total_cost_usd": 0.0
+    },
+    "complete/development": {
+      "cases": 20,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 1.0,
+      "outcome_accuracy": 1.0,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 0,
+      "forbidden_citations": 0,
+      "p95_ms_sequential": 56.18395000055898,
+      "total_cost_usd": 0.0
+    },
+    "complete/test": {
+      "cases": 40,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 0.975,
+      "outcome_accuracy": 0.975,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 0,
+      "forbidden_citations": 0,
+      "p95_ms_sequential": 51.387619008892216,
+      "total_cost_usd": 0.0
+    },
+    "without_reranker/development": {
+      "cases": 20,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 1.0,
+      "outcome_accuracy": 1.0,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 0,
+      "forbidden_citations": 0,
+      "p95_ms_sequential": 18.467054003849626,
+      "total_cost_usd": 0.0
+    },
+    "without_reranker/test": {
+      "cases": 40,
+      "operational_errors": 0,
+      "reference_check_pass_rate": 0.975,
+      "outcome_accuracy": 0.975,
+      "source_recall": 1.0,
+      "fabricated_citations": 0,
+      "inapplicable_citations": 0,
+      "forbidden_citations": 0,
+      "p95_ms_sequential": 18.101178997312672,
+      "total_cost_usd": 0.0
+    }
+  },
+  "provenance": {
+    "corpus_version": "82d154e1ccd254e05376ef9c281fc7c8fbb787b8169ae8febdc8e67d58c0efe2",
+    "generator": "offline-exact-passages-v1",
+    "retriever": "postgres-hybrid-rrf-v1:sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "reranker": "cross-encoder/ms-marco-MiniLM-L6-v2@233902d25c440f23af6f7d6e94d2946bac0bee0a",
+    "labels": "Synthetic specification facts; no independent human correctness ratings.",
+    "limitations": "Reference checks do not establish semantic entailment or real-company quality."
+  }
+}

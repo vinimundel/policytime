@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "policytime"
+version = "0.1.0"
+description = "Time-aware policy answers with inspectable evidence and explicit precedence"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = "MIT"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic>=2.10,<3",
+  "pydantic-settings>=2.7,<3", "jinja2>=3.1.6,<4", "python-multipart>=0.0.20,<1",
+  "sqlalchemy>=2.0.38,<3", "psycopg[binary]>=3.2,<4", "pgvector>=0.4,<1",
+  "alembic>=1.14,<2", "pyyaml>=6.0.2,<7", "httpx>=0.28,<1",
+  "prometheus-client>=0.21,<1", "langchain-mistralai>=1,<2",
+]
+
+[project.optional-dependencies]
+neural = ["torch>=2.6,<3", "sentence-transformers>=3.4,<6"]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<10", "pytest-cov>=6,<8", "ruff>=0.11,<1", "mypy>=1.15,<2",
+  "types-PyYAML>=6", "playwright>=1.50,<2",
+]
+
+[project.scripts]
+policytime = "policytime.delivery.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/policytime"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["pgvector.*", "sentence_transformers.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "integration: requires POLICYTIME_TEST_DATABASE_URL pointing to a disposable PostgreSQL database",
+  "browser: requires Playwright Chromium",
+  "neural: requires downloaded embedding and reranker models",
+]
+
+[tool.uv]
+environments = ["sys_platform == 'linux'"]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

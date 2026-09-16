@@ -1,0 +1,36 @@
+name: policytime
+services:
+  db:
+    image: pgvector/pgvector:pg16@sha256:ccc6e83d6e35e931dc7c5def2022729d5a6c370318d099181995567ff1fb4d6b
+    environment:
+      POSTGRES_USER: policytime
+      POSTGRES_PASSWORD: local-development-only
+      POSTGRES_DB: policytime
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U policytime -d policytime"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  app:
+    build: .
+    image: policytime:local
+    environment:
+      POLICYTIME_MODE: demo
+      POLICYTIME_DATABASE_URL: postgresql+psycopg://policytime:local-development-only@db:5432/policytime
+      POLICYTIME_ALLOWED_HOSTS: '["localhost","127.0.0.1"]'
+    ports:
+      - "127.0.0.1:8000:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  database:

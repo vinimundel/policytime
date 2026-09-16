@@ -1,0 +1,16 @@
+name: Public demo uptime
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  readiness:
+    if: vars.POLICYTIME_PUBLIC_URL != ''
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify public readiness
+        env:
+          PUBLIC_URL: ${{ vars.POLICYTIME_PUBLIC_URL }}
+        run: curl --fail --silent --show-error --max-time 20 --retry 2 "${PUBLIC_URL%/}/readyz"

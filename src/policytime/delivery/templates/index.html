@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div><p class="eyebrow"><span class="small-line"></span>POLICIES, WITH A SENSE OF TIME</p><h1>The right policy.<br><em>At the right time.</em></h1><p class="hero-description">Rules change. Your expense date doesn’t.<br>Find the version that applies, with the evidence to explain why.</p></div>
+  <div class="hero-note"><span class="note-number">01 — 02</span><div class="mini-timeline"><span>JAN</span><span>JUL</span><span>DEC</span></div><p>A new policy doesn’t rewrite an old expense.</p><span class="subtle">Explore the difference below.</span></div>
+</section>
+<div class="workspace-heading"><h2>Your policy workspace</h2><span>{{ document_count }} documents <span class="separator">/</span> {{ clause_count }} clauses <span class="separator">/</span> 2 countries</span></div>
+<section class="workspace" aria-label="Policy question workspace">
+  <div class="question-card">
+    <div class="card-topline"><span class="eyebrow">01 / SET THE CONTEXT</span><span class="company-mark">N<span class="subtle"> / Northstar Works</span></span></div>
+    <form id="question-form" hx-post="/ask" hx-target="#answer-panel" hx-swap="innerHTML" hx-indicator="#loading" hx-disabled-elt="find button[type='submit']" action="/ask" method="post">
+      <label for="question">What would you like to know?</label>
+      <textarea id="question" name="question" rows="3" minlength="3" maxlength="800" required placeholder="e.g. What is my hotel reimbursement limit?">What is my hotel reimbursement limit?</textarea>
+      <p class="field-help">Ask about travel, meals, lodging, approvals, or expense claims.</p>
+      <div class="field-grid"><div><label for="expense_date">Expense date</label><input id="expense_date" name="expense_date" type="date" value="2026-06-15" required><span class="field-help">When the expense occurred</span></div><div><label for="country">Policy country</label><select id="country" name="country" required><option value="BR">Brazil · BR</option><option value="US">United States · US</option></select></div></div>
+      <label for="employment_type">Employment type</label><select id="employment_type" name="employment_type" required><option value="employee">Employee</option><option value="contractor">Contractor</option></select>
+      <div class="comparison-control"><label class="check-label" for="compare-toggle"><input type="checkbox" id="compare-toggle">Compare with another date<span class="small-badge">TIME TRAVEL</span></label><div id="compare-field" hidden><label for="compare_date">Second expense date</label><input type="date" id="compare_date" name="compare_date" value="2026-07-15" disabled></div></div>
+      <button class="primary-button" type="submit"><span>Find the applicable policy</span><span aria-hidden="true">↗</span></button>
+      <p id="loading" class="htmx-indicator" role="status">Checking dates, exceptions, and policy evidence…</p>
+    </form>
+    <div class="examples"><p class="eyebrow">OR FOLLOW A THREAD</p>{% for example in examples %}<button type="button" class="example-button" data-example data-question="{{ example.question }}" data-date="{{ example.expense_date }}" data-country="{{ example.country }}" data-employment="{{ example.employment_type }}"><span class="example-number">{{ '%02d' % loop.index }}</span>{{ example.label }}<span aria-hidden="true">↗</span></button>{% endfor %}</div>
+  </div>
+  <div id="answer-panel" class="answer-panel" aria-live="polite" aria-atomic="false">
+    <div class="card-topline"><span class="eyebrow">02 / FOLLOW THE EVIDENCE</span><span class="small-badge">READY WHEN YOU ARE</span></div>
+    <div class="empty-state"><svg class="evidence-symbol" viewBox="0 0 120 120" fill="none" aria-hidden="true"><rect x="29" y="16" width="58" height="76" rx="4" stroke="currentColor" stroke-width="1.5"/><path d="M42 35h31M42 45h22M42 55h31" stroke="currentColor" stroke-width="1.5"/><circle cx="82" cy="84" r="22" fill="#f7f8f3" stroke="currentColor" stroke-width="1.5"/><path d="M82 71v14l9 5" stroke="currentColor" stroke-width="1.5"/><path d="M19 77h-8m8 9H7m94-52h8" stroke="currentColor" stroke-width="1.5"/></svg><h3>An answer you can trace.</h3><p>Set your context and ask a question.<br>We’ll show the applicable rules, their sources,<br>and why other versions were set aside.</p></div>
+    <div class="evidence-steps"><div><span>01</span><div><strong>Match the moment</strong><p>Find policies effective on your expense date.</p></div></div><div><span>02</span><div><strong>Resolve the exceptions</strong><p>Check the rules for your country and worker type.</p></div></div><div><span>03</span><div><strong>Show the source</strong><p>Read the exact clause behind the answer.</p></div></div></div>
+    <div class="quiet-note"><span aria-hidden="true">◇</span> If two rules disagree, you’ll see the conflict.</div>
+  </div>
+</section>
+<section class="principles" aria-label="Product principles"><div><span class="eyebrow">TIME-AWARE</span><h3>Relevant isn’t always applicable.</h3><p>A policy can match your question and still cover the wrong date.</p></div><div><span class="eyebrow">SOURCE-FIRST</span><h3>Every answer has a paper trail.</h3><p>Inspect the source text, effective dates, and replacement relationships.</p></div><div><span class="eyebrow">HONEST ABOUT GAPS</span><h3>Uncertainty stays visible.</h3><p>Missing coverage and unresolved conflicts get their own clear outcomes.</p></div></section>
+{% endblock %}

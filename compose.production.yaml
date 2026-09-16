@@ -1,0 +1,74 @@
+name: policytime-production
+services:
+  db:
+    image: pgvector/pgvector:pg16@sha256:ccc6e83d6e35e931dc7c5def2022729d5a6c370318d099181995567ff1fb4d6b
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: policytime
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?Set POSTGRES_ADMIN_PASSWORD}
+      POLICYTIME_DB_PASSWORD: ${POLICYTIME_DB_PASSWORD:?Set POLICYTIME_DB_PASSWORD}
+    volumes:
+      - database:/var/lib/postgresql/data
+      - ./deploy/init-db.sh:/docker-entrypoint-initdb.d/10-policytime.sh:ro
+    networks: [backend]
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d policytime"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+  app:
+    image: ${POLICYTIME_IMAGE:?Set a tagged POLICYTIME_IMAGE}
+    restart: unless-stopped
+    environment:
+      POLICYTIME_MODE: live
+      POLICYTIME_DATABASE_URL: postgresql+psycopg://policytime:${POLICYTIME_DB_PASSWORD}@db:5432/policytime
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY:?Set MISTRAL_API_KEY}
+      POLICYTIME_METRICS_TOKEN: ${POLICYTIME_METRICS_TOKEN:?Set a metrics token}
+      POLICYTIME_ALLOWED_HOSTS: '["${POLICYTIME_DOMAIN:?Set POLICYTIME_DOMAIN}","127.0.0.1","localhost","app"]'
+      POLICYTIME_MONTHLY_BUDGET_USD: "10"
+      FORWARDED_ALLOW_IPS: "172.28.17.2"
+    read_only: true
+    tmpfs: ["/tmp:size=192m"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 2300m
+    cpus: 2
+    networks: [backend]
+    depends_on:
+      db:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+  caddy:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    environment:
+      POLICYTIME_DOMAIN: ${POLICYTIME_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL}
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      backend:
+        ipv4_address: 172.28.17.2
+    mem_limit: 128m
+    depends_on: [app]
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+volumes:
+  database:
+  caddy_data:
+  caddy_config:
+networks:
+  backend:
+    ipam:
+      config:
+        - subnet: 172.28.17.0/24

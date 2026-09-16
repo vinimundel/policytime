@@ -1,0 +1,17 @@
+.git
+.venv
+.env*
+AGENTS.md
+.cache
+.pytest_cache
+.mypy_cache
+.ruff_cache
+artifacts
+backups
+docs/assets
+test-results
+__pycache__
+*.pyc
+.coverage
+deploy/production.env
+deploy/release-state.json

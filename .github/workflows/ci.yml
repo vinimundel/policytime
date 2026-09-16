@@ -1,0 +1,70 @@
+name: CI
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16@sha256:ccc6e83d6e35e931dc7c5def2022729d5a6c370318d099181995567ff1fb4d6b
+        env:
+          POSTGRES_USER: policytime
+          POSTGRES_PASSWORD: ci-test-only
+          POSTGRES_DB: policytime_test
+        ports: [5432:5432]
+        options: >-
+          --health-cmd 'pg_isready -U policytime -d policytime_test'
+          --health-interval 5s --health-timeout 5s --health-retries 15
+    env:
+      POLICYTIME_MODE: demo
+      POLICYTIME_TEST_DATABASE_URL: postgresql+psycopg://policytime:ci-test-only@localhost:5432/policytime_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.15'
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src
+      - run: uv run pytest -m 'not browser and not neural' --cov=policytime --cov-report=term-missing
+      - run: uv run policytime validate-corpus
+      - run: uv run policytime benchmark --output artifacts/offline-reference
+      - run: uv run playwright install --with-deps chromium
+      - name: Browser acceptance
+        run: |
+          uv run policytime serve --port 8017 > /tmp/policytime-web.log 2>&1 &
+          POLICYTIME_BROWSER_URL=http://127.0.0.1:8017 uv run pytest -m browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-artifacts
+          path: artifacts/
+  image:
+    needs: checks
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

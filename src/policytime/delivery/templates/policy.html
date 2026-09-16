@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ document.title }} — PolicyTime{% endblock %}
+{% block content %}
+<section class="page-intro"><a class="back-link" href="/policies">← Policy library</a><p class="eyebrow">NORTHSTAR WORKS / FICTIONAL POLICY</p><h1>{{ document.title }}</h1><p>Published {{ document.published_on }} · {{ document.version }}</p></section>
+<div class="policy-clauses">{% for clause in document.clauses %}<article class="policy-clause" id="{{ clause.id }}"><span class="eyebrow">{{ clause.rule_key }}</span><h2>{{ clause.id }}</h2><div class="context-strip"><span>From {{ clause.period.start }}</span><span>{% if clause.period.end %}Until {{ clause.period.end }} (exclusive){% else %}No end date{% endif %}</span><span>{{ clause.scope.employment_types|map(attribute='value')|join(' / ') }}</span></div><p>{{ clause.text }}</p>{% for relationship in clause.relationships %}<div class="relationship"><span>{{ relationship.kind }}</span><a href="/policies/{{ relationship.target_id.split('.')[0] }}#{{ relationship.target_id }}">{{ relationship.target_id }} ↗</a></div>{% endfor %}</article>{% endfor %}</div>
+{% endblock %}
