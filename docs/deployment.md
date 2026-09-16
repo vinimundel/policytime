@@ -12,7 +12,7 @@ Production needs a 4 GiB Linux VM with Docker Compose, a domain pointing to it, 
 2. Clone this repository under `/opt/policytime`. Install Docker and the Compose plugin. Keep a non-root SSH operator with controlled Docker access.
 3. Copy `deploy/production.env.example` to `deploy/production.env`; `chmod 600` it. Fill domain, ACME email, distinct random **hex** database passwords, Mistral key and a metrics token of at least 24 characters. Secrets stay on the server; hex passwords avoid URL interpolation issues.
 4. Publish a version tag only after CI passes. CI builds `ghcr.io/vinimundel/policytime:vX.Y.Z`. Set package visibility/public access or authenticate the VM. Never reuse a released version tag.
-5. Set `POLICYTIME_IMAGE` in the env file, then run `python3 deploy/release.py ghcr.io/vinimundel/policytime:v0.1.0-beta.1`.
+5. Set `POLICYTIME_IMAGE` in the env file, then run `python3 deploy/release.py ghcr.io/vinimundel/policytime:v0.1.0-beta.2`.
 6. Check `https://YOUR_DOMAIN/readyz`, the browser's six examples, date comparison, and a real hosted answer. Verify source quotations. Read `/metrics` with `Authorization: Bearer YOUR_METRICS_TOKEN` from the monitoring system.
 7. Run the hosted benchmark and two-concurrent-request load check. Keep beta labeling until quality and latency targets pass. Observe memory with `docker stats`; the 4 GiB sizing remains a deployment hypothesis until measured on the target VM.
 
