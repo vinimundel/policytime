@@ -1,7 +1,7 @@
 # Local verification — 2026-09-16
 
 - Python 3.12; Ruff checks and formatting passed; strict mypy passed across 26 source files.
-- 52 application/domain/evaluation/PostgreSQL/browser tests passed together. Two additional release rollback tests passed after correcting restoration of the previous corpus pointer.
+- 54 application/domain/evaluation/PostgreSQL/browser/release tests passed together after correcting restoration of the previous corpus pointer.
 - Chromium checked desktop and 390px mobile workflows, date comparison, source navigation and conflict examples.
 - Docker image built successfully; read-only non-root runtime (`10001:10001`) became healthy.
 - Live dependency wiring loaded both pinned CPU models, PostgreSQL and the LangChain Mistral adapter and passed readiness with a dummy API key. No hosted generation call was made; this does not validate provider credentials or model output quality.
