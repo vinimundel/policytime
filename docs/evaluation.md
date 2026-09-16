@@ -46,3 +46,11 @@ Check `policytime judge --help` for required arguments. The offline judge is Mis
 ## Launch gates
 
 Deterministic and browser tests pass locally; container build and database recovery are separately documented. Hosted answer correctness, zero invalid hosted citations, two-concurrent-request warm p95 below 15 seconds, author-rating calibration, and public uptime remain pending. Keep beta labeling until these are measured.
+
+For a small HTTP concurrency sample against the deployed service:
+
+```sh
+uv run python scripts/load_check.py --url https://YOUR_DOMAIN --output artifacts/load.json
+```
+
+It sends two requests together, spaces pairs to respect the public rate limit, and reports cache hits and failures separately. Use a warm service and inspect uncached answered requests before making any generation-latency claim. This script has been syntax/lint checked; a hosted run is still pending.

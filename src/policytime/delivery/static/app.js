@@ -25,12 +25,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.body.addEventListener("htmx:sendError", () => {
     const panel = document.querySelector("#answer-panel");
-    panel.textContent = "The connection was interrupted. Please try your question again.";
+    panel.textContent =
+      "The connection was interrupted. Please try your question again.";
   });
 
   document.body.addEventListener("htmx:afterSwap", (event) => {
-    if (event.detail.target.id !== "answer-panel" || window.innerWidth > 650) return;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    event.detail.target.scrollIntoView({behavior: reducedMotion ? "instant" : "smooth", block: "start"});
+    if (event.detail.target.id !== "answer-panel" || window.innerWidth > 650)
+      return;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    event.detail.target.scrollIntoView({
+      behavior: reducedMotion ? "instant" : "smooth",
+      block: "start",
+    });
   });
 });
